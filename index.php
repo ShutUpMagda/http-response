@@ -1,8 +1,7 @@
 <?php
 include 'classe.php';
 $system = new system();
-$system->SysEvent($system->http_code);
-?>
+$system->SysEvent($system->http_code);?>
 <!DOCTYPE html>
 <html>
     <head>
