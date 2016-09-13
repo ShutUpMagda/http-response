@@ -1,7 +1,6 @@
 <?php
 
 /**
- * Fixa elementos e metodos
  * @author Claudio Souza Jr. <claudio@uerr.edu.br>
  */
 class system {
@@ -16,7 +15,7 @@ class system {
     private $config;
 
     /**
-     * Fixa as variaveis de ambiente
+     * Declares the environment variables
      */
     function __construct() {
         include 'config.php';
@@ -27,8 +26,8 @@ class system {
     }
 
     /**
-     * Define o tipo de conexao usada na requisicao.
-     * @return string String com o metodo de conexao.
+     * Defines the type of the connection used
+     * @return string String with the connection mode
      */
     function HttpConn() {
         $ServerPort = htmlspecialchars($_SERVER['SERVER_PORT']);
@@ -42,19 +41,19 @@ class system {
     }
 
     /**
-     * Efetua a limpeza de uma variavel
-     * @param varchar $value Valor a limpar
-     * @param integer $type Tipo de limpeza a executar
+     * Does a cleaning job in '$value'
+     * @param string $value Value to clear
+     * @param integer $type Type of cleaning
      * @author Claudio Souza Jr. <claudio@uerr.edu.br>
-     * @return integer Valor limpo (sem caracteres especiais)
+     * @return void Clean value with no special characters
      */
     function Cleaner($value, $type) {
-        //Limpar um numero inteiro
+        // Clear integer variable
         if ($type == '1') {
             $value = preg_replace("/[^a-zA-Z0-9]/", "", $value);
             return $value;
         }
-        //Limpar URL
+        // Clear URL string
         elseif ($type == '2') {
             $value = str_replace('?', "", $value);
             $value = strtok($value, '?');
@@ -66,8 +65,8 @@ class system {
     }
 
     /**
-     * Calcula caminho absoluto do sistema.
-     * @return string Path absoluto do sistema.
+     * Calculates the absolute path of the system
+     * @return string Absolute path
      */
     function SysPath() {
         $PathName = htmlspecialchars($_SERVER['SCRIPT_FILENAME']);
