@@ -1,10 +1,7 @@
 # http-response
-Apache HTTP response captured by PHP
+Apache HTTP response page controlled by PHP
 
-Em conjunto com o APACHE, personaliza as mensagens de reposta do servidor HTTP Apache. 
-Cria-se um ALIAS no APACHE para o local onde o sistema de erros PHP vai
-atender, por exemplo: Alias /http-response "/usr/share/php/Classes/http-response". 
-Depois é necessario configurar o APACHE para que alguns codigos de 
-resposta HTTP sejam controlados pela classe. Por exemplo: ErrorDocument 400 /http-response
-No exemplo, o erro 404 sera controlado por esta classe. Basta inserir uma linha
-dessas no arquivo de configuração do APACHE para cada erro que sera controlado.
+Capture the response codes and customize the response page from the Apache HTTP 
+server using PHP, CSS and JavaScript. The file 'apache.conf' has the 
+configuration of the 'Alias' and of the codes you may need to make it work properly 
+(change it as you want). You should put a link to it into the 'mods-enabled' on your server. 
