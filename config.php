@@ -1,5 +1,4 @@
 <?php
-
 $config['system'] = [
     'httpcodes' => array(
         '100' => ['Continuar', 'O solicitante deve continuar com a solicitação'],
