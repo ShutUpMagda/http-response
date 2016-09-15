@@ -1,17 +1,16 @@
 <?php
 
 /**
+ * Uses PHP's 'http_response_code()' to generate customized Apache response pages
  * @author Claudio Souza Jr. <claudio@uerr.edu.br>
  */
 class system {
 
     public $http_code_id;
-    public $http_code_tipo;
+    public $http_code_type;
     public $http_code_msg;
     public $http_code;
     public $http_conn;
-    public $path;
-    public $home;
     private $config;
 
     /**
@@ -19,25 +18,23 @@ class system {
      */
     function __construct() {
         include 'config.php';
-        $this->config = $config;
+        $this->config = $config;//See the 'config.php' file above
         $this->http_code = http_response_code();
-        $this->http_conn = $this->HttpConn();
-        $this->SysPath();
+        $this->http_conn = $this->httpconn();
+        $this->sysevent($this->http_code);
     }
 
     /**
      * Defines the type of the connection used
      * @return string String with the connection mode
      */
-    function HttpConn() {
-        $ServerPort = htmlspecialchars($_SERVER['SERVER_PORT']);
-        if ($ServerPort == "443") {
-            $http_conn = 'https';
+    function httpconn() {
+        if(!empty($_SERVER['HTTPS'])){
+            return 'https://';
         }
-        else {
-            $http_conn = 'http';
+        else{
+            return 'http://';
         }
-        return $http_conn;
     }
 
     /**
@@ -65,32 +62,28 @@ class system {
     }
 
     /**
-     * Calculates the absolute path of the system
+     * Returns the absolute URL of the system
      * @return string Absolute path
      */
-    function SysPath() {
-        $PathName = htmlspecialchars($_SERVER['SCRIPT_FILENAME']);
-        $ServerName = htmlspecialchars($_SERVER['SERVER_NAME']);
-        $PathParts = pathinfo($PathName);
-        $array = explode('*', $PathParts['dirname']);
-        foreach ($array as $value) {
-            $path = $value;
-            $this->path = $path;
-        }
-        $arrayHome = explode("/", $PathParts['dirname']);
-        foreach ($arrayHome as $valueHome) {
-            $SystemDirname = $valueHome;
-            $home = $this->Cleaner($this->http_conn . "://" . $ServerName . "/" . $SystemDirname . "/", 2);
-            $this->home = $home;
-        }
+    function baseurl() {
+        return str_replace(
+            'index.php',//remove this expression of the URL
+            '',
+            $this->http_conn.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']
+        );
     }
 
-    function SysEvent($http_code_id) {
+    /**
+     * Extracts the information of the code based on the HTTP request
+     * @param type $http_code_id
+     * @return void
+     */
+    function sysevent($http_code_id) {
         $array = $this->config['system']['httpcodes'];
         foreach ($array as $cod=>$var) {
             if ($cod == $http_code_id) {
                 $this->http_code_id = $cod;
-                $this->http_code_tipo = $var[0];
+                $this->http_code_type = $var[0];
                 $this->http_code_msg = $var[1];
             }
         }
