@@ -44,7 +44,7 @@ class system {
      * @author Claudio Souza Jr. <claudio@uerr.edu.br>
      * @return void Clean value with no special characters
      */
-    function Cleaner($value, $type) {
+    function cleaner($value, $type) {
         // Clear integer variable
         if ($type == '1') {
             $value = preg_replace("/[^a-zA-Z0-9]/", "", $value);
@@ -69,7 +69,10 @@ class system {
         return str_replace(
             'index.php',//remove this expression of the URL
             '',
-            $this->http_conn.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']
+            $this->cleaner(
+                $this->http_conn.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'],
+                '2'
+            )
         );
     }
 
