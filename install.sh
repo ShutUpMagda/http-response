@@ -8,6 +8,8 @@
 # Short-Description: Simple configuration procedure
 # Description:       A simple script to start the needed configuration procedure
 ### END INIT INFO
+
+#Cleaning up the screen
 clear;
 
 # Declaring the environment variables
