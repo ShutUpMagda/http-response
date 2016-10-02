@@ -96,6 +96,7 @@ sleep 1;
 case "$1" in
 "start") start ;;
 "stop") stop ;;
-*) echo "Use 'start', 'stop' commands!";
+"restart") stop; start ;;
+*) echo "Use 'start', 'stop' or 'restart' commands!";
 esac
 
