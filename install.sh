@@ -13,45 +13,48 @@
 clear;
 
 # Declaring the environment variables
-CONFIG_FILE=$(pwd)"/apache.conf";
-CONFIG_AV_FILE="/etc/apache2/conf-available/http-response.conf";
-CONFIG_EN_FILE="/etc/apache2/conf-enabled/http-response.conf";
-LINK_CREATE=$CONFIG_FILE" "$CONFIG_AV_FILE;
-LINK_ACTIVATE=$CONFIG_AV_FILE" "$CONFIG_EN_FILE
+APACHE_DIR="/etc/apache2/";
+CONFIG_FILE="/usr/share/php/http-response/apache.conf";
+CONFIG_AVAILABLE_FILE=$APACHE_DIR"conf-available/http-response.conf";
+CONFIG_ENABLED_FILE=$APACHE_DIR"conf-enabled/http-response.conf";
+LINK_CREATE=$CONFIG_FILE" "$CONFIG_AVAILABLE_FILE;
+LINK_ACTIVATE=$CONFIG_AVAILABLE_FILE" "$CONFIG_ENABLED_FILE
+ACTION=$1;
 
 start(){
-
-	if [ -e "$CONFIG_EN_FILE" ] ; then
-	echo 'The link already exists. This program is terminated.';
-	exit 0;
+        echo 'Checking symbolic links...';
+	if [ -e "$CONFIG_ENABLED_FILE" ] ; then
+            echo 'The link '$CONFIG_ENABLED_FILE' already exists.';
+            echo 'This program is terminated.';
+            exit 0;
 	else
-		echo 'Will create the first symbolic link';
+	echo 'Will create the first symbolic link' $CONFIG_AVAILABLE_FILE;
 		ln -s $LINK_CREATE;
 		if [ $? -eq 0 ] ; then
-		echo Symbolic link $CONFIG_AV_FILE successfully created!;
+                    echo Symbolic link $CONFIG_AVAILABLE_FILE successfully created!;
 		else
-		echo 'Something went wrong. This program is terminated.';
+                    echo 'Something went wrong. This program is terminated.';
 		exit 0;
 		fi
 	sleep 1;
 		#
-		echo 'Will create the second symbolic link';
+	echo 'Will create the second symbolic link' $CONFIG_ENABLED_FILE;
 		ln -s $LINK_ACTIVATE;
 		if [ $? -eq 0 ] ; then
-		echo Symbolic link $CONFIG_EN_FILE successfully created!;
+                    echo Symbolic link $CONFIG_ENABLED_FILE successfully created!;
 		else
-		echo 'Something went wrong. This program is terminated.';
+                    echo 'Something went wrong. This program is terminated.';
 		exit 0;
 		fi
 	sleep 1;
 		#
-		echo 'Will restart the Apache server';
+	echo 'Will restart the Apache server';
 		service apache2 restart
 		if [ $? -eq 0 ] ; then
-		echo The server was successfully restarted!;
-		echo This program is terminated.;
+                    echo The server was successfully restarted!;
+                    echo This program is terminated.;
 		else
-		echo 'Something went wrong. This program is terminated.';
+                    echo 'Something went wrong. This program is terminated.';
 		exit 0;
 		fi
 	sleep 1;
@@ -59,37 +62,44 @@ start(){
 }
 
 stop(){
-
-	echo 'Will remove the first symbolic link';
-	rm $CONFIG_AV_FILE;
-	if [ $? -eq 0 ] ; then
-	echo Symbolic link $CONFIG_AV_FILE successfully removed!;
-	else
-	echo 'Something went wrong. This program is terminated.';
-	exit 0;
-	fi
-sleep 1;
-	#
-	echo 'Will remove the second symbolic link';
-	rm $CONFIG_EN_FILE;
-	if [ $? -eq 0 ] ; then
-	echo Symbolic link $CONFIG_EN_FILE successfully removed!;
-	else
-	echo 'Something went wrong. This program is terminated.';
-	exit 0;
-	fi
-sleep 1;
-	#
-	echo 'Will restart the Apache server';
-	service apache2 restart
-	if [ $? -eq 0 ] ; then
-	echo The server was successful restarted!;
-	echo This program is terminated.;
-	else
-	echo 'Something went wrong. This program is terminated.';
-	exit 0;
-	fi
-sleep 1;
+	echo 'Checking symbolic links...';
+        if [ -e "$CONFIG_AVAILABLE_FILE" ] ; then
+            rm $CONFIG_AVAILABLE_FILE;
+            if [ $? -eq 0 ] ; then
+                echo Symbolic link $CONFIG_AVAILABLE_FILE successfully removed!;
+                #
+        echo 'Will remove the second symbolic link';
+                rm $CONFIG_ENABLED_FILE;
+                if [ $? -eq 0 ] ; then
+                    echo Symbolic link $CONFIG_ENABLED_FILE successfully removed!;
+                else
+                    echo 'Something went wrong. This program is terminated.';
+                exit 0;
+                fi
+        sleep 1;
+                #
+        echo 'Will restart the Apache server';
+                service apache2 restart
+                if [ $? -eq 0 ] ; then
+                    echo "The server was successful restarted!";
+                    echo "This program is terminated.";
+                else
+                    echo 'Something went wrong. This program is terminated.';
+                    exit 0;
+                fi
+        sleep 1;
+                exit 0;
+            fi
+            else
+                echo "File '"$CONFIG_AVAILABLE_FILE"' not found!";
+                if [ $ACTION = 'restart' ] ; then
+                    start;
+                    exit 0;
+                fi
+                echo 'This program is terminated.';
+            exit 0;
+        fi
+        sleep 1;
 
 }
 
